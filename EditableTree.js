@@ -28,45 +28,26 @@ class EditableTree extends Component {
   }
 
   renderTreeNodes = data => data.map((item) => {
-    if (item.isEditable) {
+    if (item.isEditable) { 
       item.title = (
         <div>
-          <input
-            style={{
-            border: 'none',
-            borderBottom: '1px solid',
-            background: 'none',
-            lineHeight: 'normal'
-          }}
-            value={item.value}
+          <input value={item.value}
             onChange={(e) => this.onChange(e, item.key)}/>
           <Icon type='close'  style={{marginLeft:10}} onClick={() => this.onClose(item.key, item.defaultValue)}/>
           <Icon type='check'  style={{marginLeft:10}} onClick={() => this.onSave(item.key)}/>
         </div>
       );
     } else {
-      if (item.parentKey === '0') {
-        item.title = (
-          <div>
-            <span>
-              {item.value}
-            </span>
-            <Icon  style={{marginLeft:10}}  type='edit' onClick={() => this.onEdit(item.key)}/>
-            <Icon  style={{marginLeft:10}}  type='plus' onClick={() => this.onAdd(item.key)}/>
-          </div>
-        );
-      } else {
-        item.title = (
-          <div>
-            <span>
-              {item.value}
-            </span>
-            <Icon  style={{marginLeft:10}}  type='edit' onClick={() => this.onEdit(item.key)}/>
-            <Icon  style={{marginLeft:10}} type='plus' onClick={() => this.onAdd(item.key)}/>
-            <Icon  style={{marginLeft:10}}  type='minus' onClick={() => this.onDelete(item.key)}/>
-          </div>
-        );
-      }
+      item.title = (
+        <div>
+          <span>
+            {item.value}
+          </span>
+          <Icon style={{ marginLeft: 10 }} type='edit' onClick={() => this.onEdit(item.key)} />
+          <Icon style={{ marginLeft: 10 }} type='plus' onClick={() => this.onAdd(item.key)} />
+          {item.parentKey === '0' ? null : (<Icon style={{ marginLeft: 10 }} type='minus' onClick={() => this.onDelete(item.key)} />)} 
+        </div>
+      )
     }
 
     if (item.children) {
@@ -79,7 +60,7 @@ class EditableTree extends Component {
 
     return <TreeNode {...item}/>;
   })
-
+  
   onAdd = (e) => {
     console.log('add');
     // 防止expandedKeys重复
