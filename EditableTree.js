@@ -4,7 +4,7 @@ const {TreeNode} = Tree;
 
 class EditableTree extends Component {
 
-  data = [
+ data = [
     {
       value: 'Root',
       defaultValue: 'Root',
@@ -13,6 +13,7 @@ class EditableTree extends Component {
       isEditable: false
     }
   ];
+  expandedKeys = [];
 
   state = {
     expandedKeys: [],
@@ -26,6 +27,7 @@ class EditableTree extends Component {
 
   onExpand = (expandedKeys) => {
     console.log('onExpand', expandedKeys);
+    this.expandedKeys = expandedKeys;
     this.setState({ expandedKeys: expandedKeys })
   }
 
@@ -73,16 +75,13 @@ class EditableTree extends Component {
   onAdd = (e) => {
     console.log('add');
     // 防止expandedKeys重复
-    // Tip: Must have, expandedKeys should not be unique
+    // Tip: Must have, expandedKeys should not be reduplicative
     if (this.state.expandedKeys.indexOf(e) === -1) {
-      this
-        .state
-        .expandedKeys
-        .push(e);
+      this.expandedKeys.push(e);
     }
     this.addNode(e, this.data);
     this.setState({
-      expandedKeys: this.state.expandedKeys,
+      expandedKeys: this.expandedKeys,
       data: this.data
     });
   }
@@ -214,7 +213,7 @@ class EditableTree extends Component {
   render() {
     return (
       <div>
-        <Tree expandedKeys={this.state.expandedKeys} selectedKeys={[]}  onExpand={this.onExpand}>
+        <Tree expandedKeys={this.state.expandedKeys} selectedKeys={[]} onExpand={this.onExpand}>
           {this.renderTreeNodes(this.state.data)}
         </Tree>
       </div>
