@@ -4,17 +4,19 @@ const {TreeNode} = Tree;
 
 class EditableTree extends Component {
 
+  data = [
+    {
+      value: 'Root',
+      defaultValue: 'Root',
+      key: '0-1',
+      parentKey: '0',
+      isEditable: false
+    }
+  ];
+
   state = {
     expandedKeys: [],
-    data: [
-      {
-        value: 'Root',
-        defaultValue: 'Root',
-        key: '0-1',
-        parentKey: '0',
-        isEditable: false
-      }
-    ]
+    data: this.data
   };
 
   componentDidMount() {
@@ -24,17 +26,24 @@ class EditableTree extends Component {
 
   onExpand = (expandedKeys) => {
     console.log('onExpand', expandedKeys);
-    this.setState({expandedKeys: expandedKeys})
+    this.setState({ expandedKeys: expandedKeys })
   }
 
   renderTreeNodes = data => data.map((item) => {
-    if (item.isEditable) { 
+    if (item.isEditable) {
       item.title = (
         <div>
-          <input value={item.value}
-            onChange={(e) => this.onChange(e, item.key)}/>
-          <Icon type='close'  style={{marginLeft:10}} onClick={() => this.onClose(item.key, item.defaultValue)}/>
-          <Icon type='check'  style={{marginLeft:10}} onClick={() => this.onSave(item.key)}/>
+          <input
+            style={{
+              border: 'none',
+              borderBottom: '1px solid',
+              background: 'none',
+              lineHeight: 'normal'
+            }}
+            value={item.value}
+            onChange={(e) => this.onChange(e, item.key)} />
+          <Icon type='close' style={{ marginLeft: 10 }} onClick={() => this.onClose(item.key, item.defaultValue)} />
+          <Icon type='check' style={{ marginLeft: 10 }} onClick={() => this.onSave(item.key)} />
         </div>
       );
     } else {
@@ -45,7 +54,7 @@ class EditableTree extends Component {
           </span>
           <Icon style={{ marginLeft: 10 }} type='edit' onClick={() => this.onEdit(item.key)} />
           <Icon style={{ marginLeft: 10 }} type='plus' onClick={() => this.onAdd(item.key)} />
-          {item.parentKey === '0' ? null : (<Icon style={{ marginLeft: 10 }} type='minus' onClick={() => this.onDelete(item.key)} />)} 
+          {item.parentKey === '0' ? null : (<Icon style={{ marginLeft: 10 }} type='minus' onClick={() => this.onDelete(item.key)} />)}
         </div>
       )
     }
@@ -58,24 +67,24 @@ class EditableTree extends Component {
       );
     }
 
-    return <TreeNode {...item}/>;
+    return <TreeNode {...item} />;
   })
-  
+
   onAdd = (e) => {
     console.log('add');
     // 防止expandedKeys重复
-    // Tip: Must have, expandedKeys should not be reduplicative
+    // Tip: Must have, expandedKeys should not be unique
     if (this.state.expandedKeys.indexOf(e) === -1) {
       this
         .state
         .expandedKeys
         .push(e);
     }
-    this.addNode(e, this.state.data);
-    this.setState({expandedKeys: this.state.expandedKeys});
-    // 强制刷新UI
-    // Tip: Must have, force to refresh UI
-    this.forceUpdate();
+    this.addNode(e, this.data);
+    this.setState({
+      expandedKeys: this.state.expandedKeys,
+      data: this.data
+    });
   }
 
   addNode = (key, data) => data.map((item) => {
@@ -111,8 +120,10 @@ class EditableTree extends Component {
 
   onDelete = (key) => {
     console.log('delete');
-    this.deleteNode(key, this.state.data);
-    this.forceUpdate();
+    this.deleteNode(key, this.data);
+    this.setState({
+      data: this.data
+    });
   }
 
   deleteNode = (key, data) => data.map((item, index) => {
@@ -128,8 +139,10 @@ class EditableTree extends Component {
 
   onEdit = (key) => {
     console.log('edit');
-    this.editNode(key, this.state.data);
-    this.forceUpdate();
+    this.editNode(key, this.data);
+    this.setState({
+      data: this.data
+    });
   }
 
   editNode = (key, data) => data.map((item) => {
@@ -147,8 +160,10 @@ class EditableTree extends Component {
 
   onClose = (key, defaultValue) => {
     console.log('close');
-    this.closeNode(key, defaultValue, this.state.data);
-    this.forceUpdate();
+    this.closeNode(key, defaultValue, this.data);
+    this.setState({
+      data: this.data
+    });
   }
 
   closeNode = (key, defaultValue, data) => data.map((item) => {
@@ -163,8 +178,10 @@ class EditableTree extends Component {
 
   onSave = (key) => {
     console.log('save')
-    this.saveNode(key, this.state.data);
-    this.forceUpdate();
+    this.saveNode(key, this.data);
+    this.setState({
+      data: this.data
+    });
   }
 
   saveNode = (key, data) => data.map((item) => {
@@ -179,8 +196,10 @@ class EditableTree extends Component {
 
   onChange = (e, key) => {
     console.log('onchange')
-    this.changeNode(key, e.target.value, this.state.data);
-    this.forceUpdate();
+    this.changeNode(key, e.target.value, this.data);
+    this.setState({
+      data: this.data
+    });
   }
 
   changeNode = (key, value, data) => data.map((item) => {
@@ -195,7 +214,7 @@ class EditableTree extends Component {
   render() {
     return (
       <div>
-        <Tree expandedKeys={this.state.expandedKeys} onExpand={this.onExpand}>
+        <Tree expandedKeys={this.state.expandedKeys} selectedKeys={[]}  onExpand={this.onExpand}>
           {this.renderTreeNodes(this.state.data)}
         </Tree>
       </div>
