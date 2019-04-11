@@ -1,0 +1,29 @@
+.inputField {
+    border: none;
+    border-bottom: 1px solid;
+    background: none;
+    line-height: normal;
+    min-width: 50px;
+    outline: none;
+    &:focus {
+        outline: none;
+    }
+}
+
+.titleContainer {
+    .operationField {
+        visibility: hidden;
+    }
+
+    &:hover {
+        .operationField {
+            visibility: visible;
+        }
+    }
+}
+
+:global {
+    .ant-tree li .ant-tree-node-content-wrapper:hover {
+        background-color: unset;
+    }
+}
