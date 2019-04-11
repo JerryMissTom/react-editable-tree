@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Tree, Icon} from 'antd';
+import styles from './EditableTree.less';
 const {TreeNode} = Tree;
 
 class EditableTree extends Component {
@@ -32,45 +33,43 @@ class EditableTree extends Component {
   }
 
   renderTreeNodes = data => data.map((item) => {
-    if (item.isEditable) {
-      item.title = (
-        <div>
-          <input
-            style={{
-              border: 'none',
-              borderBottom: '1px solid',
-              background: 'none',
-              lineHeight: 'normal'
-            }}
-            value={item.value}
-            onChange={(e) => this.onChange(e, item.key)} />
-          <Icon type='close' style={{ marginLeft: 10 }} onClick={() => this.onClose(item.key, item.defaultValue)} />
-          <Icon type='check' style={{ marginLeft: 10 }} onClick={() => this.onSave(item.key)} />
-        </div>
-      );
-    } else {
-      item.title = (
-        <div>
-          <span>
-            {item.value}
-          </span>
-          <Icon style={{ marginLeft: 10 }} type='edit' onClick={() => this.onEdit(item.key)} />
-          <Icon style={{ marginLeft: 10 }} type='plus' onClick={() => this.onAdd(item.key)} />
-          {item.parentKey === '0' ? null : (<Icon style={{ marginLeft: 10 }} type='minus' onClick={() => this.onDelete(item.key)} />)}
-        </div>
-      )
-    }
+        if (item.isEditable) {
+            item.title = (
+                <div>
+                    <input
+                        className={styles.inputField}
+                        value={item.value}
+                        onChange={(e) => this.onChange(e, item.key)} />
+                    <Icon type='close' style={{ marginLeft: 10 }} onClick={() => this.onClose(item.key, item.defaultValue)} />
+                    <Icon type='check' style={{ marginLeft: 10 }} onClick={() => this.onSave(item.key)} />
+                </div>
+            );
+        } else {
+            item.title = (
+                <div className={styles.titleContainer}>
+                    <span>
+                        {item.value}
+                    </span>
+                    <span className={styles.operationField} >
+                        <Icon style={{ marginLeft: 10 }} type='edit' onClick={() => this.onEdit(item.key)} />
+                        <Icon style={{ marginLeft: 10 }} type='plus' onClick={() => this.onAdd(item.key)} />
+                        {item.parentKey === '0' ? null : (<Icon style={{ marginLeft: 10 }} type='minus' onClick={() => this.onDelete(item.key)} />)}
+                    </span>
+                </div>
+            )
+        }
 
-    if (item.children) {
-      return (
-        <TreeNode title={item.title} key={item.key} dataRef={item}>
-          {this.renderTreeNodes(item.children)}
-        </TreeNode>
-      );
-    }
+        if (item.children) {
+            return (
+                <TreeNode title={item.title} key={item.key} dataRef={item}>
+                    {this.renderTreeNodes(item.children)}
+                </TreeNode>
+            );
+        }
 
-    return <TreeNode {...item} />;
-  })
+        return <TreeNode {...item} />;
+    })
+
 
   onAdd = (e) => {
     console.log('add');
